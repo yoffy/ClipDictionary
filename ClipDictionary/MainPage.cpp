@@ -89,9 +89,9 @@ namespace
 
 namespace winrt::ClipDictionary::implementation
 {
-    MainPage::MainPage()
-    {
-        InitializeComponent();
+	MainPage::MainPage()
+	{
+		InitializeComponent();
 
 		// クリップボード監視
 		Clipboard::ContentChanged([this](IInspectable const& /* sender */, IInspectable const& /* args */)
@@ -108,15 +108,15 @@ namespace winrt::ClipDictionary::implementation
 		});
 	}
 
-    int32_t MainPage::MyProperty()
-    {
-        throw hresult_not_implemented();
-    }
+	int32_t MainPage::MyProperty()
+	{
+		throw hresult_not_implemented();
+	}
 
-    void MainPage::MyProperty(int32_t /* value */)
-    {
-        throw hresult_not_implemented();
-    }
+	void MainPage::MyProperty(int32_t /* value */)
+	{
+		throw hresult_not_implemented();
+	}
 
 	void MainPage::TextChanged(IInspectable const&, Controls::TextChangedEventArgs const&)
 	{

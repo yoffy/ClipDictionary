@@ -8,12 +8,12 @@
 
 namespace winrt::ClipDictionary::implementation
 {
-    struct MainPage : MainPageT<MainPage>
-    {
-        MainPage();
+	struct MainPage : MainPageT<MainPage>
+	{
+		MainPage();
 
-        int32_t MyProperty();
-        void MyProperty(int32_t value);
+		int32_t MyProperty();
+		void MyProperty(int32_t value);
 
 		void TextChanged(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::Controls::TextChangedEventArgs const& args);
 		Windows::Foundation::IAsyncAction ClickHandler(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
@@ -30,7 +30,7 @@ namespace winrt::ClipDictionary::implementation
 
 namespace winrt::ClipDictionary::factory_implementation
 {
-    struct MainPage : MainPageT<MainPage, implementation::MainPage>
-    {
-    };
+	struct MainPage : MainPageT<MainPage, implementation::MainPage>
+	{
+	};
 }
