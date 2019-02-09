@@ -90,6 +90,9 @@ ipch/
 *.vspx
 *.sap
 
+# Visual Studio generated files
+Generated\ Files/
+
 # TFS 2012 Local Workspace
 $tf/
 
