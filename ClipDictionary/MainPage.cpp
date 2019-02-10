@@ -225,9 +225,20 @@ namespace winrt::ClipDictionary::implementation
 			// タブ(ejdic形式)または「:」(英辞郎形式)をキーの区切りとしてm_Dictionaryに追加
 			size_t iSep = wcscspn(&wstr[0], L"\t:");
 			wstr[iSep] = 0;
-			hstring key = TrimDictionary(&wstr[0]);
-			hstring value = &wstr[iSep + 1];
-			m_Dictionary.emplace_hint(m_Dictionary.end(), key, value);
+			size_t iKeyStart = 0;
+			bool isEijiro = (wstr[0] == L'■');
+			do
+			{
+				// ejdic形式でキーが「favor,favour」のように複数ある場合はそれぞれのキーで登録
+				// 英辞郎形式は「■Foo Co,. Ltd.」のように1つのキーの中に「,」が入るので分割しない
+				wchar_t* pSubSep = isEijiro ? &wstr[iSep] : std::find(&wstr[iKeyStart], &wstr[iSep], L',');
+				*pSubSep = 0;
+				hstring key = TrimDictionary(&wstr[iKeyStart]);
+				hstring value = &wstr[iSep + 1];
+				m_Dictionary.emplace_hint(m_Dictionary.end(), key, value);
+
+				iKeyStart = pSubSep - &wstr[0] + 1;
+			} while (iKeyStart < iSep);
 		}
 	}
 
