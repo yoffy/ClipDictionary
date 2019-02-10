@@ -5,6 +5,8 @@
 #pragma once
 
 #include "MainPage.g.h"
+#include <map>
+#include <optional>
 
 namespace winrt::ClipDictionary::implementation
 {
@@ -23,6 +25,7 @@ namespace winrt::ClipDictionary::implementation
 
 		Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> PickDictionary();
 		Windows::Foundation::IAsyncAction LoadDictionary(size_t size, char const* buffer);
+		std::optional<hstring> LookUpWords(hstring const& words);
 		Windows::Foundation::IAsyncAction UpdateFromClipboard();
 	};
 }

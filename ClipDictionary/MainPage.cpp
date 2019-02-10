@@ -141,40 +141,11 @@ namespace winrt::ClipDictionary::implementation
 
 	void MainPage::TextChanged(IInspectable const&, Controls::TextChangedEventArgs const&)
 	{
-		auto iDesc = m_Dictionary.find(TrimDictionary(searchBox().Text().c_str()));
-		if (iDesc == m_Dictionary.end())
+		std::optional<hstring> description = LookUpWords(searchBox().Text());
+		if (description)
 		{
-			return;
+			descriptionBlock().Text(description.value());
 		}
-
-		// 第一義
-		hstring description = iDesc->second;
-
-		// 他にも定義がある場合は探す
-		auto iSubDesc = iDesc;
-		const hstring& key = iDesc->first;
-
-		while (++iSubDesc != m_Dictionary.end())
-		{
-			const hstring& subKey = iSubDesc->first;
-			if (0 != memcmp(key.c_str(), subKey.c_str(), std::min(key.size(), subKey.size())))
-			{
-				break;
-			}
-			if (*subKey.rbegin() != L'}')
-			{
-				break;
-			}
-		}
-
-		// 先頭から順に第一義に足していく
-		while (++iDesc != iSubDesc)
-		{
-			hstring header = &iDesc->first.c_str()[key.size()]; // 「key｛名｝」のkeyを飛ばす
-			description = description + L"\n" + header + iDesc->second;
-		}
-
-		descriptionBlock().Text(description);
 	}
 
 	Windows::Foundation::IAsyncAction MainPage::OnOpenDictionary(IInspectable const&, RoutedEventArgs const&)
@@ -265,6 +236,44 @@ namespace winrt::ClipDictionary::implementation
 				iKeyStart = pSubSep - &wstr[0] + 1;
 			} while (iKeyStart < iSep);
 		}
+	}
+
+	std::optional<hstring> MainPage::LookUpWords(hstring const & words)
+	{
+		auto iDesc = m_Dictionary.find(TrimDictionary(words.c_str()));
+		if (iDesc == m_Dictionary.end())
+		{
+			return std::nullopt;
+		}
+
+		// 第一義
+		hstring description = iDesc->second;
+
+		// 他にも定義がある場合は探す
+		auto iSubDesc = iDesc;
+		const hstring& key = iDesc->first;
+
+		while (++iSubDesc != m_Dictionary.end())
+		{
+			const hstring& subKey = iSubDesc->first;
+			if (0 != memcmp(key.c_str(), subKey.c_str(), std::min(key.size(), subKey.size())))
+			{
+				break;
+			}
+			if (*subKey.rbegin() != L'}')
+			{
+				break;
+			}
+		}
+
+		// 先頭から順に第一義に足していく
+		while (++iDesc != iSubDesc)
+		{
+			hstring header = &iDesc->first.c_str()[key.size()]; // 「key｛名｝」のkeyを飛ばす
+			description = description + L"\n" + header + iDesc->second;
+		}
+
+		return description;
 	}
 
 	Windows::Foundation::IAsyncAction MainPage::UpdateFromClipboard()
