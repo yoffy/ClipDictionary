@@ -213,6 +213,7 @@ namespace winrt::ClipDictionary::implementation
 		m_Dictionary.clear();
 
 		std::vector<wchar_t> wstr;
+		auto iLastKey = m_Dictionary.begin();
 		for (size_t i = 0; i < size; ++i)
 		{
 			// \nの次から次の\nまでをstart, cLengthで表現
@@ -235,7 +236,16 @@ namespace winrt::ClipDictionary::implementation
 				*pSubSep = 0;
 				hstring key = TrimDictionary(&wstr[iKeyStart]);
 				hstring value = &wstr[iSep + 1];
-				m_Dictionary.emplace_hint(m_Dictionary.end(), key, value);
+				if (m_Dictionary.size() && iLastKey->first == key)
+				{
+					// すでにキーが存在する場合は連結する (例: 英辞郎のfavour)
+					iLastKey->second = iLastKey->second + L"\n" + value;
+				}
+				else
+				{
+					// 新規に追加
+					iLastKey = m_Dictionary.emplace_hint(m_Dictionary.end(), key, value);
+				}
 
 				iKeyStart = pSubSep - &wstr[0] + 1;
 			} while (iKeyStart < iSep);
