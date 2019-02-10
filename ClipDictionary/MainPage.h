@@ -16,7 +16,7 @@ namespace winrt::ClipDictionary::implementation
 		void MyProperty(int32_t value);
 
 		void TextChanged(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::Controls::TextChangedEventArgs const& args);
-		Windows::Foundation::IAsyncAction ClickHandler(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
+		Windows::Foundation::IAsyncAction OnOpenDictionary(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
 
 	private:
 		std::map<hstring, hstring> m_Dictionary;

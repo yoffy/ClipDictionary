@@ -177,7 +177,7 @@ namespace winrt::ClipDictionary::implementation
 		descriptionBlock().Text(description);
 	}
 
-	Windows::Foundation::IAsyncAction MainPage::ClickHandler(IInspectable const&, RoutedEventArgs const&)
+	Windows::Foundation::IAsyncAction MainPage::OnOpenDictionary(IInspectable const&, RoutedEventArgs const&)
 	{
 		StorageFile file = co_await PickDictionary();
 		if (!file)

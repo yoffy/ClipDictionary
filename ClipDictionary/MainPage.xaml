@@ -20,7 +20,7 @@
                 <ColumnDefinition Width="90"/>
             </Grid.ColumnDefinitions>
             <TextBox x:Name="searchBox" TextChanged="TextChanged" InputScope="Search" Text="" IsSpellCheckEnabled="True" PlaceholderText="検索語句を入力してください" Grid.Column="0"/>
-            <Button x:Name="loadButton" Click="ClickHandler" Content="辞書を開く..." FontFamily="Segoe UI" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
+            <Button x:Name="loadButton" Click="OnOpenDictionary" Content="辞書を開く..." FontFamily="Segoe UI" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
         </Grid>
         <ScrollViewer Grid.Row="2">
             <TextBlock x:Name="descriptionBlock" Text="辞書が読み込まれていません。" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
