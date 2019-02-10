@@ -24,7 +24,6 @@ namespace winrt::ClipDictionary::implementation
 		Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> PickDictionary();
 		Windows::Foundation::IAsyncAction LoadDictionary(size_t size, char const* buffer);
 		Windows::Foundation::IAsyncAction UpdateFromClipboard();
-		hstring TrimDictionary(wchar_t const* text);
 	};
 }
 

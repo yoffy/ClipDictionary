@@ -24,6 +24,7 @@ using Windows::UI::ViewManagement::ApplicationViewMode;
 
 namespace
 {
+
 	bool is_utf8(const char* buffer, size_t size)
 	{
 		const uint8_t* p = (const uint8_t*)buffer;
@@ -85,6 +86,25 @@ namespace
 		// TODO: check error
 		wstr[wLength] = 0;
 	}
+
+	//! 先頭と末尾にある [ \t■] を取り除く
+	hstring TrimDictionary(wchar_t const * text)
+	{
+		const wchar_t* kRejectChars = L" \t■";
+		size_t len = wcslen(text);
+		size_t start = wcsspn(text, kRejectChars);
+		size_t lastspn = 0;
+		{
+			// テキストを反転してwcsspnすることで末尾のreject文字数を得る (富豪的)
+			wchar_t* rev = _wcsrev(_wcsdup(text));
+			lastspn = wcsspn(rev, kRejectChars);
+			free(rev);
+		}
+		size_t spnLen = start + lastspn;
+		uint32_t innerLen = uint32_t(len > spnLen ? len - spnLen : 0);
+		return hstring(&text[start], innerLen);
+	}
+
 }
 
 namespace winrt::ClipDictionary::implementation
@@ -233,19 +253,4 @@ namespace winrt::ClipDictionary::implementation
 		}
 	}
 
-	//! 先頭と末尾にある [ \t■] を取り除く
-	hstring MainPage::TrimDictionary(wchar_t const * text)
-	{
-		const wchar_t* kRejectChars = L" \t■";
-		size_t start = wcsspn(text, kRejectChars);
-		size_t lastspn = 0;
-		{
-			// テキストを反転してwcsspnすることで末尾のreject文字数を得る (富豪的)
-			wchar_t* rev = _wcsrev(_wcsdup(text));
-			lastspn = wcsspn(rev, kRejectChars);
-			free(rev);
-		}
-		uint32_t len = uint32_t(wcslen(text) - start - lastspn);
-		return hstring(&text[start], len);
-	}
 }
