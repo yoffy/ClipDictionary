@@ -81,8 +81,9 @@ namespace
 		}
 
 		// UTF-16に変換してwstrに入れる
-		wstr.resize(cLength + 100);
-		int wLength = MultiByteToWideChar(codePage, flags, buffer, int(cLength), &wstr[0], int(wstr.size()));
+		int wLength = MultiByteToWideChar(codePage, flags, buffer, int(cLength), nullptr, 0);
+		wstr.resize(wLength + 1);
+		MultiByteToWideChar(codePage, flags, buffer, int(cLength), &wstr[0], int(wstr.size()));
 		// TODO: check error
 		wstr[wLength] = 0;
 	}
