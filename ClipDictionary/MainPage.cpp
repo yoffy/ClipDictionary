@@ -224,10 +224,24 @@ namespace winrt::ClipDictionary::implementation
 			to_wcs(wstr, &buffer[start], cLength);
 
 			// タブ(ejdic形式)または「:」(英辞郎形式)をキーの区切りとしてm_Dictionaryに追加
-			size_t iSep = wcscspn(&wstr[0], L"\t:");
+			size_t iSep = 0;
+			size_t sepLen = 1;
+			bool isEijiro = (wstr[0] == L'■');
+			if (isEijiro)
+			{
+				// 「12:00 noon」のような単語があるため「 : 」で区切る
+				const wchar_t sepSeq[] = L" : ";
+				sepLen = _countof(sepSeq) - 1; // NUL
+				auto iSep2 = std::search(wstr.begin(), wstr.end(), &sepSeq[0], &sepSeq[sepLen]);
+				iSep = iSep2 - wstr.begin();
+			}
+			else
+			{
+				// タブ区切り
+				iSep = wcscspn(&wstr[0], L"\t");
+			}
 			wstr[iSep] = 0;
 			size_t iKeyStart = 0;
-			bool isEijiro = (wstr[0] == L'■');
 			do
 			{
 				// ejdic形式でキーが「favor,favour」のように複数ある場合はそれぞれのキーで登録
@@ -235,7 +249,7 @@ namespace winrt::ClipDictionary::implementation
 				wchar_t* pSubSep = isEijiro ? &wstr[iSep] : std::find(&wstr[iKeyStart], &wstr[iSep], L',');
 				*pSubSep = 0;
 				hstring key = TrimDictionary(&wstr[iKeyStart]);
-				hstring value = &wstr[iSep + 1];
+				hstring value = &wstr[iSep + sepLen];
 				if (m_Dictionary.size() && iLastKey->first == key)
 				{
 					// すでにキーが存在する場合は連結する (例: 英辞郎のfavour)
